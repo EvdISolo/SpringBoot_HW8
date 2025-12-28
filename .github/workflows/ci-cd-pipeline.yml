@@ -3,9 +3,9 @@ name: CI/CD Pipeline for TODO App
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master]
 
 
 jobs:
