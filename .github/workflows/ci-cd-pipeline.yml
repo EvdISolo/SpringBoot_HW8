@@ -98,13 +98,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to VM
-        uses: appleboy/ssh-action@v0.1.4
+        uses: appleboy/ssh-action@v1.0.0  #________
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_SSH_KEY }}
+          port: 22
           script: |
+            echo "Connected to $(hostname)"
             docker pull ${{ secrets.DOCKER_USERNAME }}/todo-app:latest
             docker stop todo-app || true
             docker rm todo-app || true
             docker run -d -p 8080:8080 --name todo-app ${{ secrets.DOCKER_USERNAME }}/todo-app:latest
+          script_stop: true
