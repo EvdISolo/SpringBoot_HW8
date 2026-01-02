@@ -14,10 +14,7 @@ import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Интеграционные тесты для TaskController.
- * Проверяют работу API через HTTP-запросы.
- */
+
 @SpringBootTest
 @AutoConfigureMockMvc
 class TaskControllerTest {
