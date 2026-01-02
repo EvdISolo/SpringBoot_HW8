@@ -46,6 +46,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: app-jar
+          path: ./artifact
+
+      - name: Find JAR file
+        id: find-jars
+        run: |
+          JAR_PATH=$(find ./artifact -name "*.jar" -print -quit)
+          echo "JAR_PATH=$JAR_PATH" >> $GITHUB_OUTPUT
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -59,6 +66,8 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/todo-app:latest
+          build-args: |
+            JAR_FILE=${{ steps.find-jars.outputs.JAR_PATH }}
 
   deploy:
     needs: docker-build
