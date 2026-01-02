@@ -25,9 +25,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Build and run tests
+      - name: Build and package
         run: |
-          mvn clean test
+          mvn clean package
+
+      - name: Debug - List target directory
+        run: |
+          echo "Listing target directory contents:"
+          ls -la target/
+          echo "Finding JAR files:"
+          find target/ -name "*.jar" -type f
 
       - name: Save JAR artifact
         uses: actions/upload-artifact@v4
@@ -42,16 +49,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Debug - List available artifacts
+        run: |
+          echo "Listing artifacts directory before download:"
+          ls -la ./
+
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           name: app-jar
           path: ./artifact
 
+      - name: Debug - List downloaded artifact
+        run: |
+          echo "Listing downloaded artifact directory:"
+          ls -la ./artifact/
+          echo "Finding JAR files in artifact directory:"
+          find ./artifact -name "*.jar" -type f
+
       - name: Find JAR file
         id: find-jars
         run: |
-          JAR_PATH=$(find ./artifact -name "*.jar" -print -quit)
+          JAR_PATH=$(find ./artifact -name "*.jar" -type f -print -quit)
+          if [ -z "$JAR_PATH" ]; then
+            echo "ERROR: No JAR file found in artifact directory!"
+            exit 1
+          fi
+          echo "Found JAR at: $JAR_PATH"
           echo "JAR_PATH=$JAR_PATH" >> $GITHUB_OUTPUT
 
       - name: Login to Docker Hub
